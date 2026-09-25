@@ -840,7 +840,7 @@ function athenaCard(){var a=athenaToday(),ai=sampleState==='ok';
   else if(a)body='<div class="prio"><p class="essh">Tu prioridad de hoy</p><p class="prio-t">'+esc(a.prioridad)+'</p><p class="td">'+esc(a.porque)+'</p>'+
     (a.paso?'<p class="td"><b>Empieza así:</b> '+esc(a.paso)+'</p>':'')+
     '<div class="add">'+(a.added?'<span class="added">En tu semana</span>':'<button class="btn" data-act="athadd">Agregar a mi semana</button>')+(ai?'<button class="btn ghost" data-act="athgo">Preguntar de nuevo</button>':'')+'</div></div>';
-  else body=ai?'<div class="add"><button class="btn" data-act="athgo">¿Cuál es mi prioridad hoy?</button></div>':'<p class="hint">Athenea funciona con IA dentro de Claude.</p>';
+  else body=ai?'<div class="add"><button class="btn" data-act="athgo">¿Cuál es mi prioridad hoy?</button></div>':'<p class="hint">Athenea funciona cuando la IA está conectada.</p>';
   return '<div class="card athena"><div class="ath-h"><span class="ath-ic">'+BRAIN_SVG+'</span><div><h2>Athenea</h2><p class="td">Tu cerebro CEO. Ve toda la empresa y te dice cuál es tu prioridad.</p></div></div>'+
     (ath.err?'<p class="adv-err">'+esc(ath.err)+'</p>':'')+body+'</div>';}
 function athenaGo(){if(!sampleFn||ath.busy)return;ath.busy=true;ath.err='';render();
@@ -1069,8 +1069,8 @@ function advisorBlock(scope){
   var intro=scope==='grow'?'Piensa contigo en grande: primeros principios, ofertas, cuellos de botella y propósito. Conoce tu perfil, tu etapa y tus números.':isWide(scope)?'Ve toda tu empresa y te dice cuál es la prioridad. Pídele un plan o pregúntale lo que quieras.':'Conoce tu avance en este pilar y te guía paso a paso. Pregúntale lo que quieras o pídele tu plan de acción.';
   var pnote=profScore()<50?'<p class="profnote">Para que Athenea te hable de tus productos y clientes, completa el <button class="linkbtn" data-act="go" data-v="perfil">perfil de la empresa</button>.</p>':'';
   var head=pnote+'<div class="adv-h"><img class="adv-av" src="'+ATHENA_SQ+'" alt=""><div><h3>'+esc(P.adv)+'</h3><p class="hint">'+intro+'</p></div></div>';
-  if(sampleState==='off')return '<div class="card advisor">'+head+'<p class="hint">Athenea funciona cuando abres este sistema dentro de Claude.</p></div>';
-  if(sampleState==='denied')return '<div class="card advisor">'+head+'<p class="hint">Para usar a Athenea, permite que esta página use Claude. Puedes volver a intentarlo al recargar la página.</p></div>';
+  if(sampleState==='off')return '<div class="card advisor">'+head+'<p class="hint">Athenea funciona cuando la IA está conectada.</p></div>';
+  if(sampleState==='denied')return '<div class="card advisor">'+head+'<p class="hint">Para usar a Athenea, permite que esta página use la IA (o escribe el código de acceso). Puedes volver a intentarlo al recargar la página.</p></div>';
   var h=loadHist(scope),busyHere=adv.busy&&adv.scope===scope;
   var msgs=h.map(function(m){return m.role==='user'?'<div class="msg u">'+esc(m.content)+'</div>':'<div class="msg a">'+md(m.content)+'</div>';}).join('');
   if(scope==='all'){var AL=brainAlerts();brainCache=AL;var hi0=AL.filter(function(x){return x.lv==='high';}).length;
@@ -1194,8 +1194,8 @@ function calendarTool(){
     '<p class="fine" style="margin-top:14px">Ritmo recomendado para empezar: 3 a 4 publicaciones a la semana en Instagram y 1 video largo al mes en YouTube. La constancia pesa más que la cantidad.</p>';
 }
 function ideasTool(){
-  if(sampleState==='off')return '<p class="hint">Esta herramienta usa IA y funciona cuando abres el sistema dentro de Claude.</p>';
-  if(sampleState==='denied')return '<p class="hint">Para generar ideas, permite que esta página use Claude. Puedes intentarlo de nuevo al recargar.</p>';
+  if(sampleState==='off')return '<p class="hint">Esta herramienta usa IA y funciona cuando la IA está conectada.</p>';
+  if(sampleState==='denied')return '<p class="hint">Para generar ideas, permite que esta página use la IA (o escribe el código de acceso). Puedes intentarlo de nuevo al recargar.</p>';
   var objs=['Atraer nuevos seguidores','Educar a mi cliente','Vender un producto o servicio','Crear comunidad y confianza','Mostrar detrás de escena'];
   var res='';
   if(ideas.busy)res='<p class="thinking" style="margin-top:14px">Pensando en ideas…</p>';
@@ -1758,7 +1758,7 @@ function repTab(){var g=C(),ai=sampleState==='ok',m0=ymOf(todayStr()),months=[];
   var sel=cv.repMonth||addMonths(m0,-1),rep=g.reports[sel];
   return '<div class="card"><h3>Informe mensual de directorio</h3><p class="hint">Cada mes, mira tu empresa como la miraría un directorio: qué pasó, qué funcionó, qué no y qué decidir.</p>'+
     '<div class="formgrid"><label><span>Mes</span><select data-act="repm">'+months.map(function(m){return '<option value="'+m+'"'+(m===sel?' selected':'')+'>'+ymLabel(m)+(g.reports[m]?' ✓':'')+'</option>';}).join('')+'</select></label></div>'+
-    (ai?'<div class="add"><button class="btn" data-act="repgen"'+(cv.busy?' disabled':'')+'>'+(rep?'Volver a generar':'Generar informe')+'</button>'+(rep&&downloadsFn?'<button class="btn ghost" data-act="repdl">Descargar</button>':'')+'</div>':'<p class="hint">El informe se genera con IA dentro de Claude.</p>')+
+    (ai?'<div class="add"><button class="btn" data-act="repgen"'+(cv.busy?' disabled':'')+'>'+(rep?'Volver a generar':'Generar informe')+'</button>'+(rep&&downloadsFn?'<button class="btn ghost" data-act="repdl">Descargar</button>':'')+'</div>':'<p class="hint">El informe se genera con IA cuando está conectada.</p>')+
     (cv.err&&cv.tab==='informe'?'<p class="adv-err">'+esc(cv.err)+'</p>':'')+
     (cv.busy==='rep'?'<p class="thinking">Preparando el informe…</p>':(rep?'<div class="guion out report">'+md(rep)+'</div>':''))+'</div>';}
 
@@ -1962,7 +1962,7 @@ function boardMini(){var b=B()[0];return '<div class="card boardmini"><div class
   '<div class="add"><button class="btn'+(b?' ghost':'')+'" data-act="go" data-v="board">'+(b?'Ver la reunión':'Convocar reunión')+'</button></div></div>';}
 function boardView(){var bs=B(),b=bs[0],ai=sampleState==='ok';
   var head='<div class="view"><button class="back" data-act="go" data-v="pilares">‹ Pilares</button><div class="head"><h2>Reunión de directorio</h2><p>Tus chiefs revisan cada área con tus datos reales, detectan dónde chocan y tu CEO decide un solo plan para todos los departamentos.</p></div>'+
-    (ai?'<div class="add"><button class="btn" data-act="boardgo"'+(bd.busy?' disabled':'')+'>'+(bd.busy?'Reunión en curso…':(b?'Convocar una nueva reunión':'Convocar reunión'))+'</button></div>':'<p class="hint">La reunión funciona con IA dentro de Claude.</p>')+
+    (ai?'<div class="add"><button class="btn" data-act="boardgo"'+(bd.busy?' disabled':'')+'>'+(bd.busy?'Reunión en curso…':(b?'Convocar una nueva reunión':'Convocar reunión'))+'</button></div>':'<p class="hint">La reunión funciona con IA cuando está conectada.</p>')+
     (bd.err?'<p class="adv-err">'+esc(bd.err)+'</p>':'')+(bd.busy?'<p class="thinking">Tus chiefs están revisando la empresa. Puede tardar un minuto…</p>':'');
   if(!b)return head+'</div>';
   var dot=function(e){return '<span class="bdot b-'+(e==='rojo'?'bad':e==='amarillo'?'warn':'ok')+'"></span>';};
@@ -2200,7 +2200,57 @@ if(window.claude&&typeof window.claude.use==='function'){
   window.claude.use('sample').then(function(fn){sampleFn=fn;sampleState=fn?'ok':'off';render();}).catch(function(){sampleState='off';render();});
   window.claude.use('artifact').then(function(ns){cap=ns;capReady=true;paintStatus();if(cap&&dirty){clearTimeout(timer);timer=setTimeout(publishNow,1500);}})
   .catch(function(){capReady=true;paintStatus();});
-}else{capReady=true;sampleState='off';render();}
+}else{capReady=true;webInit();}
+
+// --- Fuera de Claude (p. ej. Vercel): IA a través de /api/claude y descargas con el navegador
+function webInit(){
+  var CODE_KEY='athenea:code',API='/api/claude';
+  function getCode(){try{return localStorage.getItem(CODE_KEY)||'';}catch(e){return '';}}
+  function setCode(v){try{if(v)localStorage.setItem(CODE_KEY,v);else localStorage.removeItem(CODE_KEY);}catch(e){}}
+  function call(turns,opts,json,retried){
+    opts=opts||{};var text='';
+    return fetch(API,{method:'POST',headers:{'content-type':'application/json','x-athenea-code':getCode()},body:JSON.stringify({messages:turns,json:!!json}),signal:opts.signal})
+    .then(function(res){
+      if(res.status===401){
+        setCode('');if(retried)throw {code:'not_granted'};
+        var c=window.prompt('Escribe el código de acceso de Athenea');
+        if(!c)throw {code:'not_granted'};setCode(c.trim());return call(turns,opts,json,true);
+      }
+      if(res.status===429)throw {code:'rate_limited'};
+      if(!res.ok||!res.body)throw {code:'server_error'};
+      var reader=res.body.getReader(),dec=new TextDecoder(),buf='',out=null;
+      function line(l){if(!l)return;var m=JSON.parse(l);
+        if(m.t){text+=m.t;if(opts.onText)opts.onText({text:text});}
+        else if(m.error)throw {code:m.error,text:text};
+        else if(m.done)out={text:text,truncated:!!m.truncated};}
+      function pump(){return reader.read().then(function(r){
+        if(r.value){buf+=dec.decode(r.value,{stream:true});var parts=buf.split('\n');buf=parts.pop();parts.forEach(line);}
+        if(r.done){line(buf.trim());if(!out)throw {code:'server_error',text:text};return out;}
+        return pump();});}
+      return pump();
+    })
+    .catch(function(e){
+      if(opts.signal&&opts.signal.aborted)throw {code:'cancelled',text:text};
+      if(e&&e.code)throw e;throw {code:'network',text:text};
+    });
+  }
+  function toTurns(x){return typeof x==='string'?[{role:'user',content:x}]:x;}
+  var sample=function(x,opts){return call(toTurns(x),opts,false);};
+  sample.json=function(x,opts){return call(toTurns(x),opts,true).then(function(r){
+    var s=String(r.text).replace(/^\s*```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'');
+    var a=s.indexOf('{'),b=s.lastIndexOf('}');
+    try{return JSON.parse(a>-1&&b>a?s.slice(a,b+1):s);}catch(e){throw {code:'invalid_json'};}
+  });};
+  downloadsFn={save:function(o){try{
+    var blob=new Blob([o.data],{type:/\.csv$/i.test(o.filename)?'text/csv;charset=utf-8':'text/plain;charset=utf-8'});
+    var url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=o.filename||'archivo.txt';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1000);
+    return Promise.resolve();}catch(e){return Promise.reject({code:'unavailable'});}}};
+  render();
+  fetch(API).then(function(r){return r.ok?r.json():null;}).then(function(s){
+    if(s&&s.ok){sampleFn=sample;sampleState='ok';}else sampleState='off';render();
+  }).catch(function(){sampleState='off';render();});
+}
 })();
 </script>
 </body>

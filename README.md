@@ -2,38 +2,50 @@
 
 Sistema de arranque y crecimiento de empresas con Athenea, el cerebro CEO.
 
-Es un sitio estático: toda la aplicación (HTML, CSS, JS e imágenes) está en `index.html`. No necesita dependencias ni paso de build.
+La interfaz es un sitio estático (`index.html`). Las funciones de IA usan la API de Claude a través de una función de servidor (`api/claude.js`), así que la clave nunca llega al navegador.
 
 ## Estructura
 
 ```
 .
-├── index.html    # La aplicación completa
-├── vercel.json   # Configuración de despliegue en Vercel
-├── .gitignore
+├── index.html      # La aplicación completa (HTML, CSS, JS e imágenes)
+├── api/claude.js   # Función de Vercel: conecta la app con la API de Claude
+├── package.json    # Dependencia: @anthropic-ai/sdk
+├── vercel.json     # Configuración de despliegue
+├── .env.example    # Variables de entorno necesarias
 └── README.md
 ```
 
 ## Desplegar en Vercel
 
 1. En [vercel.com](https://vercel.com) → **Add New → Project** → importa este repositorio.
-2. **Framework Preset:** `Other`.
-3. **Build Command:** vacío. **Output Directory:** vacío (raíz). **Root Directory:** `./`.
-4. **Deploy.**
+2. **Framework Preset:** `Other`. Build Command y Output Directory vacíos.
+3. En **Environment Variables** agrega:
+   - `ANTHROPIC_API_KEY` — tu clave de [console.anthropic.com](https://console.anthropic.com) (obligatoria).
+   - `ATHENEA_ACCESS_CODE` — un código que la app pedirá antes de usar la IA (opcional, **recomendado**: sin él, cualquiera que tenga el enlace puede gastar tu saldo de la API).
+4. **Deploy.** Cada push a `main` se despliega automáticamente.
 
-Cada push a `main` se desplegará automáticamente en producción.
+Si cambias las variables después, vuelve a desplegar (Deployments → Redeploy) para que se apliquen.
+
+### Variables opcionales
+
+| Variable | Por defecto | Para qué sirve |
+|---|---|---|
+| `ANTHROPIC_MODEL` | `claude-opus-5` | Modelo de Claude que usa Athenea |
+| `ANTHROPIC_EFFORT` | `medium` | Cuánto razona antes de responder: `low`, `medium`, `high`, `xhigh`, `max`. Más alto = mejores respuestas pero más lento y caro |
 
 ## Probar en local
 
-Abre `index.html` en el navegador, o sirve la carpeta:
-
 ```bash
-npx serve .
-# o
-python3 -m http.server 3000
+npm install
+npx vercel dev      # sirve la página y la función /api/claude
 ```
 
-## Notas
+Crea un archivo `.env.local` con tus variables (usa `.env.example` como guía). Si abres `index.html` directamente, la app funciona pero sin IA.
 
-- Los datos se guardan en el navegador (`localStorage`) de cada dispositivo.
-- Las funciones de IA (Asesor, diagnósticos, generación de planes, informes) y la exportación CSV usan el entorno de Claude (`window.claude`). Fuera de Claude —por ejemplo en Vercel— la app funciona igual, pero esas funciones aparecen desactivadas.
+## Cómo funciona
+
+- **Datos:** se guardan en el navegador (`localStorage`) de cada dispositivo; no se comparten entre dispositivos.
+- **IA:** fuera de Claude, la página llama a `/api/claude`, que transmite la respuesta de Claude en tiempo real. Si la clave no está configurada, las funciones de IA se ocultan.
+- **Descargas** (CSV para el contador, informes): se descargan directamente desde el navegador.
+- Dentro de Claude (como artifact), la app sigue usando las capacidades nativas de Claude.
